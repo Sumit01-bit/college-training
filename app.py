@@ -1,33 +1,35 @@
-from flask import Flask , render_template, request
-import pickle , joblib
-import numpy as np 
+from flask import Flask, request, jsonify,render_template,Request,url_for
+import joblib
+scaler = joblib.load('scaler.lb')
+kmeans = joblib.load('crop_reco_kmeans.lb')
+df = joblib.load('crop_reco_df.lb')
 
-vectorizer = pickle.load(open("vectorizer.lb","rb"))
-model = pickle.load(open("spamclassifiermodel.pkl","rb"))
 
 app = Flask(__name__)
-
-@app.route("/",methods = ["GET","POST"])
+@app.route('/')
 def home():
-    return render_template("index.html")
-
-@app.route("/predict",methods = ["POST"] )
+    return render_template('index.html')
+@app.route('/predict', methods=['POST'])
 def predict():
-    try:
-        if request.form == "POST":
-            messg = str(request.form["mesg"])
-            transformed = vectorizer.transform([messg])
-            transformed_data = transformed.toarray()
-            pred = model.predict(transformed_data)
-            output = str(pred[0])
-            return render_template ("result.html",prediction =f"{output}")
+    if request.method == 'POST':
+        n = int(request.form['nitorgen'])
+        p = int(request.form['phosphorus'])
+        k = int(request.form['potassium'])
+        t = int(request.form['temperature'])
+        h = int(request.form['humidity'])
+        ph = int(request.form['ph'])
+        r = int(request.form['rainfall'])
+        user_data = [[n, p, k, t, h, ph, r]]
+        trans_data = scaler.transform(user_data)
+        prediction = kmeans.predict(trans_data)[0]
+        print(prediction)
+        dt = dict(df[df['cluster_8'] == prediction]["label"].value_counts())
+        return render_template('index.html',dt,df)
+        ls = []
+        for k,v in dt.items():
+            if v>=70:
+                ls.append(k)
+        return jsonify(ls)
 
-    except Exception as e :
-        # return render_template("result.html",prediction = f"Error : {str(e)}")
-        print(e)
-    
-
-
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0",port = 8080,debug=True)
+if __name__ == '__main__':
+    app.run(debug=True)
