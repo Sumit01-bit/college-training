@@ -1,0 +1,33 @@
+Architecture of cnn
+convenetional layer:- this is bacically used for the feature extraction.  
+    edge:- change in intensity
+    feature:-jisse apkis image basisc hoti h
+    ye layer bacically edges ko detect kerti h or features ko extract kerti h using multiple layers
+    filters(feature extraction)and kernel
+pooling:- 
+flatter layer:- which is bacically used for convert the 3d array into 1d array
+edge detection me gray scale image use hoti h
+matrix multiplicatoin se jo matrix milegi usko feature map bolte hoti
+thsi is the shape of the feature map:- (n-m+1)(n-m+1)
+    website:- deeplizard
+Drawbacks of the convenetional layer:-
+    memory issue
+    translation Varience(Important)
+        features after the convenetional layer->location dependent
+        input us accoring dena pdega jis according apn ne model train kiya hoti
+    pooling->helps in translation invarience:-
+                    ye feature map ko down sample ->most Important feature ko extract kerti helps
+
+types of pooling:-
+max pooling:-most common used
+min :- 
+avg
+l2
+global:-g max
+        g avg
+
+jb bhi hm pooling apply kerte h we have to tell about 3 parameters
+size(2,2) iska mtlb h ki apn ek n,n ki matrix design kerte h\
+stride(2) skip ya fir step wlaa kaam after using it the folmula of pooling->  ((n-m)/s)+1
+type(max)
+
